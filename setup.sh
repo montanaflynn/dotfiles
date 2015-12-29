@@ -1,34 +1,74 @@
 #!/usr/bin/env bash
 
 #########################################################################################
-### Monty's OSX Setup Script
-### https://github.com/montanaflynn/dotfiles/blob/master/setup.sh
+### OSX "El Capitan" MacBook Pro Setup Script
+### https://github.com/montanaflynn/dotfiles/
 #########################################################################################
+
+name="Montana Flynn"
+email="montana@montanaflynn.me"
 
 # Ask for the administrator password upfront and update
 # existing `sudo` time stamp until `.osx` has finished
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
+# Create a handy-dandy helper function to symlink files
+DOTFILES="$HOME/dotfiles"
+
+install() {
+	mkdir -p $(dirname "$HOME/$2")
+	[ -L "$HOME/$2" ] || ln -fs "$DOTFILES/$1" "$HOME/$2"
+}
+
 #########################################################################################
 ### XCode Command Line Tools
 ### https://github.com/alrra/dotfiles/blob/ff123ca9b9b/os/os_x/installs/install_xcode.sh
 #########################################################################################
-if ! xcode-select --print-path &> /dev/null; then
 
-    # Install XCode and the Command Line Tools
-    xcode-select --install
+# Install XCode and the Command Line Tools
+xcode-select --install
 
-    # Point the `xcode-select` developer directory to
-    # the appropriate directory from within `Xcode.app`
-    # https://github.com/alrra/dotfiles/issues/13
-    sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+# Point the `xcode-select` developer directory to
+# the appropriate directory from within `Xcode.app`
+# https://github.com/alrra/dotfiles/issues/13
+sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
 
-    # Prompt user to agree to the terms of the Xcode license
-    # https://github.com/alrra/dotfiles/issues/10
-    sudo xcodebuild -license accept
+# Prompt user to agree to the terms of the Xcode license
+# https://github.com/alrra/dotfiles/issues/10
+sudo xcodebuild -license accept
 
-fi
+#########################################################################################
+### Fish Shell
+### https://github.com/alrra/dotfiles/blob/ff123ca9b9b/os/os_x/installs/install_xcode.sh
+#########################################################################################
+
+# Set fish shell to be default shell, it's really awesome
+sudo bash -c 'echo "/usr/local/bin/fish" >> /etc/shells'
+install "fish/config.fish" ".config/fish/config.fish"
+install "fish/aliases.fish" ".config/fish/aliases.fish"
+install "fish/prompt.fish" ".config/fish/prompt.fish"
+chsh -s /usr/local/bin/fish
+
+# Use oh-my-fish for their awesome plugins
+# https://github.com/zenangst/dotfiles/tree/master/oh-my-fish/plugins
+curl -L https://github.com/oh-my-fish/oh-my-fish/raw/master/bin/install | fish
+install "omf/bundle" ".config/omf/bundle"
+omf install
+
+#########################################################################################
+### Tmux bind key is mapped to ctrl-a instead of ctrl-b, I also map my capslock to ctrl
+### Cheatsheet: https://gist.github.com/MohamedAlaa/2961058
+#########################################################################################
+install "tmux/.tmux.conf" ".tmux.conf"
+
+#########################################################################################
+### Tell git who I am, you'll likely want to change mine or I'll be attributed to
+### your commits, yes really... https://news.ycombinator.com/item?id=10005577
+#########################################################################################
+
+git config --global user.name $name
+git config --global user.email $email
 
 #########################################################################################
 ### OSX Defaults that I've been collecting for awhile...
