@@ -6,6 +6,7 @@ function ..... ; cd ../../../.. ; end
 
 # Utilities
 function g        ; git $argv ; end
+function gs       ; git status ; end
 function grep     ; command grep --color=auto $argv ; end
 
 alias cask='brew cask' # i <3 u cask
