@@ -2,7 +2,7 @@
 set -e fish_greeting
 
 # Path to Oh My Fish install.
-set -gx OMF_PATH /Users/montanaflynn/.local/share/omf
+set -gx OMF_PATH ~/.local/share/omf
 
 # Set GOPATH
 set -gx GOPATH ~/Development/go/
